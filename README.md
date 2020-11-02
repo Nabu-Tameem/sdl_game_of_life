@@ -1,6 +1,6 @@
-#SDL Game of Life
+# SDL Game of Life
 An implementation of Conway's game of life using Rust for backend and SDL2 for user interface.
-##Features to be added:
+## Features to be added:
 - The ability to pause the universe.
 - Increase the size of the world (possibly "infinite" size universe implementation).
 - Implement GPU acceleration for rendering the cells.
