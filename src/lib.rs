@@ -7,10 +7,26 @@ pub enum Cell {
     Alive = 1,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum State {
+    Running,
+    Paused,
+}
+
+impl State {
+    pub fn toggle(&self) -> State {
+        match self {
+            State::Running => State::Paused,
+            State::Paused => State::Running
+        }
+    }
+}
+
 pub struct Universe {
     width: u32,
     height: u32,
     cells: Vec<Cell>,
+    state: State,
 }
 
 extern crate sdl2;
@@ -31,7 +47,7 @@ impl Universe {
     pub fn new(height: u32, width: u32) -> Universe  {
         let cells = (0..(width * height))
             .map(|i| {
-                if i % 2 == 0 || i % 7 == 0 {
+                if i % 3 == 0 || i % 7 == 0 {
                     Cell::Alive
                 } else {
                     Cell::Dead
@@ -43,6 +59,7 @@ impl Universe {
             height,
             width,
             cells,
+            state: State::Paused,
         }
     }
 
@@ -73,39 +90,45 @@ impl Universe {
 
     /// Moves the state of the game by one tick
     pub fn tick(& mut self) {
-        let mut next = self.cells.clone();
-        
-        for row in 0..self.height {
-            for col in 0..self.width {
-                let index = self.get_index(row, col);
-                let live_neighbors = self.get_live_neighbors(row, col);
 
-                next[index] = match (live_neighbors, self.cells[index]){
-                    // if neighbors are less than two, then cell dies
-                    (x, Cell::Alive) if x < 2 => Cell::Dead,
-                    // if neighbors more than tree, then cell dies
-                    (x, Cell::Alive) if x > 3 => Cell::Dead,
-                    // if neighbors 2 or 3, then cell stays alive
-                    (2, Cell::Alive) | (3, Cell::Alive) => Cell::Alive,
-                    // if neighbors exactly 3, then revive
-                    (3, Cell::Dead) => Cell::Alive,
-                    // stay the same for other states
-                    (_, otherwise) => otherwise,
-                };
+        match self.state {
+            State::Paused => return,
+            State::Running => {
+                let mut next = self.cells.clone();
+        
+                for row in 0..self.height {
+                    for col in 0..self.width {
+                        let index = self.get_index(row, col);
+                        let live_neighbors = self.get_live_neighbors(row, col);
+        
+                        next[index] = match (live_neighbors, self.cells[index]){
+                            // if neighbors are less than two, then cell dies
+                            (x, Cell::Alive) if x < 2 => Cell::Dead,
+                            // if neighbors more than tree, then cell dies
+                            (x, Cell::Alive) if x > 3 => Cell::Dead,
+                            // if neighbors 2 or 3, then cell stays alive
+                            (2, Cell::Alive) | (3, Cell::Alive) => Cell::Alive,
+                            // if neighbors exactly 3, then revive
+                            (3, Cell::Dead) => Cell::Alive,
+                            // stay the same for other states
+                            (_, otherwise) => otherwise,
+                        };
+                    }
+                }
+                
+                self.cells = next;
             }
         }
-        
-        self.cells = next;
+
     }
 
 
 
     pub fn render(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>, x: u32, y: u32) {
-        let mut current_x: u32 = x;
         let mut current_y: u32 = y;
         // currently the size of the cell is 10x10 pixels with 2 pixel border
         for row in self.cells.as_slice().chunks(self.width as usize) {
-            current_x = x;
+            let mut current_x = x;
             for &cell in row {
                 if cell == Cell::Alive {
                     canvas.set_draw_color(Color::RGB(255, 255, 255));
@@ -119,24 +142,10 @@ impl Universe {
         }
     }
     
-    // pub fn render(&self) {
-    //     println!("{}", self.to_string());
-    // }
-}
-
-use std::fmt;
-
-impl fmt::Display for Universe {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for line in self.cells.as_slice().chunks(self.width as usize) {
-            for &cell in line {
-                let symbol = if cell == Cell::Dead {' '} else {'█'};
-                write!(f, "{}", symbol)?;
-            }
-
-            write!(f, "\n")?;
+    pub fn toggle_state(&mut self) {
+        self.state = match self.state {
+            State::Running => State::Paused,
+            State::Paused => State::Running,
         }
-
-        Ok(())
     }
 }

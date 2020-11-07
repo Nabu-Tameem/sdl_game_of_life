@@ -28,7 +28,6 @@ fn main() {
     canvas.present();
 
     let mut event_pump = sdl_context.event_pump().unwrap();
-
     'running: loop {
         canvas.set_draw_color(Color::RGB(128, 86, 32));
         canvas.clear();
@@ -39,13 +38,16 @@ fn main() {
                 Event::KeyDown {keycode: Some(Keycode::Escape), ..} => {
                     break 'running
                 },
-                _ => {}
+                Event::KeyDown {keycode: Some(Keycode::Space), ..} => {
+                    universe.toggle_state();
+                },
+                _ => {
+                }
             }
         }
-
+        
         universe.render(&mut canvas, 2, 2);
         universe.tick();
-
         canvas.present();
         thread::sleep(Duration::from_millis(100));
     }
