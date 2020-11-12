@@ -16,7 +16,7 @@ fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
 
-    let window = video_subsystem.window("SDL Game of Life", 1600, 900)
+    let window = video_subsystem.window("SDL Game of Life", 1000, 1000)
         .position_centered()
         .build()
         .unwrap();
@@ -41,6 +41,11 @@ fn main() {
                 Event::KeyDown {keycode: Some(Keycode::Space), ..} => {
                     universe.toggle_state();
                 },
+                Event::KeyDown {keycode: Some(Keycode::Right), ..} => {
+                    universe.run();
+                    universe.tick();
+                    universe.pause();
+                },
                 _ => {
                 }
             }
@@ -49,14 +54,6 @@ fn main() {
         universe.render(&mut canvas, 2, 2);
         universe.tick();
         canvas.present();
-        thread::sleep(Duration::from_millis(100));
+        thread::sleep(Duration::from_millis(0));
     }
-
-    
-    // loop {
-    //     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-    //     universe.render();
-    //     universe.tick();
-    //     thread::sleep(Duration::from_millis(300));
-    // }
 }

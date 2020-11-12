@@ -146,6 +146,14 @@ impl Universe {
         self.state = match self.state {
             State::Running => State::Paused,
             State::Paused => State::Running,
-        }
+        };
+    }
+
+    pub fn pause(&mut self) {
+        self.state = State::Paused;
+    }
+
+    pub fn run(&mut self) {
+        self.state = State::Running;
     }
 }
