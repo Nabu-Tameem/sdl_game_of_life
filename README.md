@@ -1,24 +1,33 @@
 # SDL Game of Life
+
 An implementation of Conway's game of life using Rust for backend and SDL2 for user interface.
 
 ## Requirements
-- SDL2 development libraries.   
+
+- SDL2 development libraries.
 
 Ubuntu
-```
+
+```shell
 apt install sdl2-dev
 ```
+
 Arch
-```
+
+```shell
 pacman -S sdl2
 ```
+
 Solus
-```
+
+```shell
 eopkg install -c sdl2-devel
 ```
 
-## Features to be added:
+## Features to be added
+
 - ~~The ability to pause the universe.~~
+- ~~The ability to move forwards one tick.~~
 - Increase the size of the world (possibly "infinite" size universe implementation).
 - Implement GPU acceleration for rendering the cells.
 - The ability to scroll through the universe.
@@ -28,5 +37,6 @@ eopkg install -c sdl2-devel
 - Support other display sizes for the window.
 - The ability to change resolution.
 
-## Motivation:
+## Motivation  
+
 why not?
