@@ -7,26 +7,11 @@ pub enum Cell {
     Alive = 1,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum State {
-    Running,
-    Paused,
-}
-
-impl State {
-    pub fn toggle(&self) -> State {
-        match self {
-            State::Running => State::Paused,
-            State::Paused => State::Running
-        }
-    }
-}
-
 pub struct Universe {
     width: u32,
     height: u32,
     cells: Vec<Cell>,
-    state: State,
+    running: bool,
 }
 
 extern crate sdl2;
@@ -59,7 +44,7 @@ impl Universe {
             height,
             width,
             cells,
-            state: State::Paused,
+            running: false,
         }
     }
 
@@ -91,9 +76,9 @@ impl Universe {
     /// Moves the state of the game by one tick
     pub fn tick(& mut self) {
 
-        match self.state {
-            State::Paused => return,
-            State::Running => {
+        match self.running {
+            false => return,
+            true => {
                 let mut next = self.cells.clone();
         
                 for row in 0..self.height {
@@ -143,17 +128,14 @@ impl Universe {
     }
     
     pub fn toggle_state(&mut self) {
-        self.state = match self.state {
-            State::Running => State::Paused,
-            State::Paused => State::Running,
-        };
+        self.running ^= true;
     }
 
     pub fn pause(&mut self) {
-        self.state = State::Paused;
+        self.running = false;
     }
 
     pub fn run(&mut self) {
-        self.state = State::Running;
+        self.running = true;
     }
 }
