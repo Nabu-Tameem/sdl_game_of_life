@@ -142,4 +142,39 @@ impl Universe {
         self.x_offset += x;
         self.y_offset += y;
     }
+
+    fn get_by_coordinates(&self, x: i32, y: i32) -> Option<usize> {
+        // TODO use dynamic cell size to get coordinates when scaling
+        let x_size = 12;
+        let y_size = 12;
+        // Take the cell size and spacing, multiply by it's index
+        
+        let y_index = (((y - self.y_offset) as f32) / (y_size as f32)).floor();
+        let x_index = (((x - self.x_offset) as f32) / (x_size as f32)).floor();
+
+        if y_index < 0.0 || x_index < 0.0 || y_index >= self.height as f32 || x_index >= self.width as f32 {
+            return None;
+        }
+
+        println!("x: {} y: {} x index: {} y index {}", x, y, x_index, y_index);
+
+        Some((y_index as u32 * self.width + x_index as u32) as usize)
+
+    }
+
+    pub fn kill(&mut self, x: i32, y: i32) {
+        let cell_index = match self.get_by_coordinates(x, y) {
+            Some(index) => index,
+            None => return
+        };
+        self.cells[cell_index] = Cell::Dead;
+    }
+
+    pub fn revive(&mut self, x: i32, y: i32) {
+        let cell_index = match self.get_by_coordinates(x, y) {
+            Some(index) => index,
+            None => return
+        };
+        self.cells[cell_index] = Cell::Alive
+    }
 }

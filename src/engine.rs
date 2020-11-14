@@ -85,12 +85,14 @@ impl Engine {
                     Event::MouseButtonDown {mouse_btn, x, y, ..} => {
                         match mouse_btn {
                             MouseButton::Left => {
-                                mouse_setting = true
-                                // Universe.kill(x, y);
+                                mouse_setting = true;
+                                self.universe.revive(x, y);
+                                self.universe.render(&mut self.canvas);
+                                self.canvas.present();
                             },
                             MouseButton::Right => {
-                                mouse_clearing = true
-                                // Universe.revive(x, y);
+                                mouse_clearing = true;
+                                self.universe.kill(x, y);
                             },
                             MouseButton::Middle => mouse_dragging = true,
                             _ => {}
@@ -107,6 +109,8 @@ impl Engine {
                             _ => {}
                         };
                     },
+
+                    // Apply motion event like dragging, cell batch revive, cell batch kill.
                     Event::MouseMotion {x, y, ..} => {
                         if mouse_dragging {
                             let x_dif = x - previous_mouse_pos_x;
@@ -117,9 +121,9 @@ impl Engine {
                             previous_mouse_pos_x = x;
                             previous_mouse_pos_y = y;
                         } else if mouse_setting {
-                            
+                            self.universe.revive(x, y);
                         } else if mouse_clearing {
-
+                            self.universe.kill(x, y);
                         }
                     },
                     _ => {
