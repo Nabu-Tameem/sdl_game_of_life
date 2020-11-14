@@ -17,7 +17,7 @@ pub struct Engine {
 
 impl Engine {
     pub fn new() -> Result<Engine, String> {
-        let universe = Universe::new(512, 512);
+        let universe = Universe::new(64, 115);
 
         let sdl_context = sdl2::init()?;
         let video_subsystem = sdl_context.video()?;
@@ -58,7 +58,8 @@ impl Engine {
         let mut previous_mouse_pos_x: i32 = 0;
         let mut previous_mouse_pos_y: i32 = 0;
 
-        let mut start = Instant::now();
+        let mut render_timer = Instant::now();
+        let mut tick_timer = Instant::now();
 
         'running: loop {
             self.canvas.set_draw_color(Color::RGB(120, 120, 120));
@@ -142,12 +143,16 @@ impl Engine {
                     }
                 }
             }
-            self.universe.tick();
 
-            if start.elapsed().as_millis() >= 8  {
+            if tick_timer.elapsed().as_millis() >= 100 {
+                self.universe.tick();
+                tick_timer = Instant::now();
+            }
+
+            if render_timer.elapsed().as_millis() >= 8  {
                 self.universe.render(&mut self.canvas);
                 self.canvas.present();
-                start = Instant::now();
+                render_timer = Instant::now();
             }
             
         }
