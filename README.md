@@ -46,3 +46,5 @@ eopkg install -c sdl2-devel
 - Middle Mouse: Drag the universe.
 - Right Mouse: Kill a cell.
 - Left Mouse: Revive a cell.
+- Scroll Up: Zoom in to the universe.
+- Scroll Down: Zoom out of the universe.
