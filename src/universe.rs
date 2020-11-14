@@ -31,15 +31,7 @@ impl Universe {
     /// let universe = Universe::new(64, 64);
     /// ```
     pub fn new(height: u32, width: u32) -> Universe  {
-        let cells = (0..(width * height))
-            .map(|i| {
-                if i % 3 == 0 || i % 7 == 0 {
-                    Cell::Alive
-                } else {
-                    Cell::Dead
-                }
-            })
-            .collect();
+        let cells = vec![Cell::Dead; (width * height) as usize];
         
         Universe{
             height,

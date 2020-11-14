@@ -1,7 +1,7 @@
 use sdl2;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::mouse::{MouseButton, MouseWheelDirection};
+use sdl2::mouse::MouseButton;
 use sdl2::pixels::Color;
 
 use std::time::Instant;
@@ -17,7 +17,7 @@ pub struct Engine {
 
 impl Engine {
     pub fn new() -> Result<Engine, String> {
-        let universe = Universe::new(64, 64);
+        let universe = Universe::new(512, 512);
 
         let sdl_context = sdl2::init()?;
         let video_subsystem = sdl_context.video()?;
@@ -37,10 +37,6 @@ impl Engine {
         };
 
         let event_pump = sdl_context.event_pump().unwrap();
-
-        // canvas.set_draw_color(Color::RGB(120, 120, 120));
-        // canvas.clear();
-        // canvas.present();
 
         Ok(Engine {
             canvas,

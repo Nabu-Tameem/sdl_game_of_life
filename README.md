@@ -28,7 +28,7 @@ eopkg install -c sdl2-devel
 
 - ~~The ability to pause the universe.~~
 - ~~The ability to move forwards one tick.~~
-- Increase the size of the world (possibly "infinite" size universe implementation).
+- ~~Increase the size of the world~~ (possibly "infinite" size universe implementation).
 - Implement GPU acceleration for rendering the cells.
 - ~~The ability to scroll through the universe.~~
 - ~~The ability to toggle a cell (Turn a dead cell into a live cell, and vice versa) by clicking on it.~~
