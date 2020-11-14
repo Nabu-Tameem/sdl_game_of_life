@@ -1,7 +1,7 @@
 use sdl2;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::mouse::MouseButton;
+use sdl2::mouse::{MouseButton, MouseWheelDirection};
 use sdl2::pixels::Color;
 
 use std::time::Instant;
@@ -106,6 +106,14 @@ impl Engine {
                             MouseButton::Left => mouse_setting = false,
                             MouseButton::Right => mouse_clearing = false,
                             MouseButton::Middle => mouse_dragging = false,
+                            _ => {}
+                        };
+                    },
+                    // Scale the board with scroll wheel
+                    Event::MouseWheel {y, ..} => {
+                        match y {
+                            1 => self.universe.increment_scale(0.1),
+                            -1 => self.universe.increment_scale(-0.1),
                             _ => {}
                         };
                     },

@@ -7,6 +7,12 @@ pub struct Universe {
     running: bool,
     x_offset: i32,
     y_offset: i32,
+    scale: f32,
+    // Spacing between cells in pixels
+    spacing: u32,
+    // Leg size of a cell square
+    leg_size: u32,
+
 }
 
 extern crate sdl2;
@@ -42,6 +48,9 @@ impl Universe {
             running: false,
             x_offset: 0,
             y_offset: 0,
+            scale: 1.0,
+            leg_size: 10,
+            spacing: 1,
         }
     }
 
@@ -116,13 +125,15 @@ impl Universe {
                 } else {
                     canvas.set_draw_color(Color::RGB(0, 0, 0));
                 }
-                canvas.fill_rect(Rect::new(current_x, current_y, 10, 10)).unwrap();
+                let leg_size = (self.leg_size as f32 * self.scale).floor() as u32;
+                
+                canvas.fill_rect(Rect::new(current_x, current_y, leg_size, leg_size)).unwrap();
 
 
-                current_x += 12;
+                current_x += ((self.leg_size + self.spacing * 2) as f32 * self.scale) as i32;
             }
 
-            current_y += 12;
+            current_y += ((self.leg_size + self.spacing * 2) as f32 * self.scale) as i32;
         }
     }
     
@@ -145,8 +156,8 @@ impl Universe {
 
     fn get_by_coordinates(&self, x: i32, y: i32) -> Option<usize> {
         // TODO use dynamic cell size to get coordinates when scaling
-        let x_size = 12;
-        let y_size = 12;
+        let x_size = ((self.leg_size + self.spacing * 2) as f32 * self.scale) as i32;
+        let y_size = ((self.leg_size + self.spacing * 2) as f32 * self.scale) as i32;
         // Take the cell size and spacing, multiply by it's index
         
         let y_index = (((y - self.y_offset) as f32) / (y_size as f32)).floor();
@@ -155,7 +166,7 @@ impl Universe {
         if y_index < 0.0 || x_index < 0.0 || y_index >= self.height as f32 || x_index >= self.width as f32 {
             return None;
         }
-        
+
         Some((y_index as u32 * self.width + x_index as u32) as usize)
 
     }
@@ -174,5 +185,9 @@ impl Universe {
             None => return
         };
         self.cells[cell_index] = Cell::Alive
+    }
+
+    pub fn increment_scale(&mut self, increment: f32) {
+        self.scale += increment;
     }
 }
