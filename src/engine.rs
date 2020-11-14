@@ -4,8 +4,7 @@ use sdl2::keyboard::Keycode;
 use sdl2::mouse::MouseButton;
 use sdl2::pixels::Color;
 
-use std::time::Duration;
-use std::thread;
+use std::time::Instant;
 
 use crate::universe::Universe;
 
@@ -63,8 +62,9 @@ impl Engine {
         let mut previous_mouse_pos_x: i32 = 0;
         let mut previous_mouse_pos_y: i32 = 0;
 
+        let mut start = Instant::now();
+
         'running: loop {
-            let mut rendered = false;
             self.canvas.set_draw_color(Color::RGB(120, 120, 120));
             self.canvas.clear();
 
@@ -81,9 +81,6 @@ impl Engine {
                         self.universe.run();
                         self.universe.tick();
                         self.universe.pause();
-                        self.universe.render(&mut self.canvas);
-                        self.canvas.present();
-                        rendered = true;
                     },
                     // Enable dragging, cell revive mode, and cell kill mode.
                     Event::MouseButtonDown {mouse_btn, x, y, ..} => {
@@ -91,17 +88,11 @@ impl Engine {
                             MouseButton::Left => {
                                 mouse_setting = true;
                                 self.universe.revive(x, y);
-                                self.universe.render(&mut self.canvas);
-                                self.canvas.present();
-                                rendered = true;
 
                             },
                             MouseButton::Right => {
                                 mouse_clearing = true;
                                 self.universe.kill(x, y);
-                                self.universe.render(&mut self.canvas);
-                                self.canvas.present();
-                                rendered = true;
                             },
                             MouseButton::Middle => mouse_dragging = true,
                             _ => {}
@@ -134,9 +125,6 @@ impl Engine {
                         } else if mouse_clearing {
                             self.universe.kill(x, y);
                         }
-                        self.universe.render(&mut self.canvas);
-                        self.canvas.present();
-                        rendered = true;
                     },
                     _ => {
                     }
@@ -144,9 +132,10 @@ impl Engine {
             }
             self.universe.tick();
 
-            if !rendered {
+            if start.elapsed().as_millis() >= 8  {
                 self.universe.render(&mut self.canvas);
                 self.canvas.present();
+                start = Instant::now();
             }
             
         }

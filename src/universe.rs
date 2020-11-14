@@ -155,9 +155,7 @@ impl Universe {
         if y_index < 0.0 || x_index < 0.0 || y_index >= self.height as f32 || x_index >= self.width as f32 {
             return None;
         }
-
-        println!("x: {} y: {} x index: {} y index {}", x, y, x_index, y_index);
-
+        
         Some((y_index as u32 * self.width + x_index as u32) as usize)
 
     }
