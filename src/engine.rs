@@ -1,6 +1,7 @@
 use sdl2;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
+use sdl2::mouse::MouseButton;
 use sdl2::pixels::Color;
 
 use std::time::Duration;
@@ -55,6 +56,15 @@ impl Engine {
         self.canvas.clear();
         self.canvas.present();
 
+        let mut mouse_state = sdl2::mouse::MouseState::new(& self.event_pump);
+
+        let mut mouse_dragging = false;
+        let mut mouse_setting = false;
+        let mut mouse_clearing = false;
+
+        let mut previous_mouse_pos_x: i32 = 0;
+        let mut previous_mouse_pos_y: i32 = 0;
+
         'running: loop {
             self.canvas.set_draw_color(Color::RGB(120, 120, 120));
             self.canvas.clear();
@@ -73,6 +83,30 @@ impl Engine {
                         self.universe.tick();
                         self.universe.pause();
                     },
+                    // Toggle dragging mode to move the canvas
+                    Event::MouseButtonDown {mouse_btn: MouseButton::Middle, x, y, ..} => {
+                        mouse_dragging = true;
+                        previous_mouse_pos_x = x;
+                        previous_mouse_pos_y = y;
+                    },
+                    Event::MouseMotion {x, y, ..} => {
+                        if mouse_dragging {
+                            let x_dif = x - previous_mouse_pos_x;
+                            let y_dif = y - previous_mouse_pos_y;
+    
+                            self.universe.shift(x_dif, y_dif);
+
+                            previous_mouse_pos_x = x;
+                            previous_mouse_pos_y = y;
+                        } else if mouse_setting {
+                            
+                        } else if mouse_clearing {
+
+                        }
+                    }
+                    Event::MouseButtonUp {mouse_btn: MouseButton::Middle, ..} => {
+                        mouse_dragging = false;
+                    }
                     _ => {
                     }
                 }
@@ -81,7 +115,6 @@ impl Engine {
             self.universe.render(&mut self.canvas);
             self.universe.tick();
             self.canvas.present();
-            thread::sleep(Duration::from_millis(100));
         }
     }
 }
