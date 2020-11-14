@@ -81,11 +81,31 @@ impl Engine {
                         self.universe.tick();
                         self.universe.pause();
                     },
-                    // Toggle dragging mode to move the canvas
-                    Event::MouseButtonDown {mouse_btn: MouseButton::Middle, x, y, ..} => {
-                        mouse_dragging = true;
+                    // Enable dragging, cell revive mode, and cell kill mode.
+                    Event::MouseButtonDown {mouse_btn, x, y, ..} => {
+                        match mouse_btn {
+                            MouseButton::Left => {
+                                mouse_setting = true
+                                // Universe.kill(x, y);
+                            },
+                            MouseButton::Right => {
+                                mouse_clearing = true
+                                // Universe.revive(x, y);
+                            },
+                            MouseButton::Middle => mouse_dragging = true,
+                            _ => {}
+                        };
                         previous_mouse_pos_x = x;
                         previous_mouse_pos_y = y;
+                    },
+                    // Disable dragging, cell revive mode, and cell kill mode.
+                    Event::MouseButtonUp {mouse_btn, ..} => {
+                        match mouse_btn {
+                            MouseButton::Left => mouse_setting = false,
+                            MouseButton::Right => mouse_clearing = false,
+                            MouseButton::Middle => mouse_dragging = false,
+                            _ => {}
+                        };
                     },
                     Event::MouseMotion {x, y, ..} => {
                         if mouse_dragging {
@@ -101,10 +121,7 @@ impl Engine {
                         } else if mouse_clearing {
 
                         }
-                    }
-                    Event::MouseButtonUp {mouse_btn: MouseButton::Middle, ..} => {
-                        mouse_dragging = false;
-                    }
+                    },
                     _ => {
                     }
                 }
