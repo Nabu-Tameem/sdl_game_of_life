@@ -137,4 +137,9 @@ impl Universe {
     pub fn run(&mut self) {
         self.running = true;
     }
+
+    pub fn shift(&mut self, x: i32, y: i32) {
+        self.x_offset += x;
+        self.y_offset += y;
+    }
 }
