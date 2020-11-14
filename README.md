@@ -37,8 +37,12 @@ eopkg install -c sdl2-devel
 - The ability to zoom in and out of the universe (Scaling the cells).
 - ~~Support other display sizes for the window.~~
 - The ability to change resolution.
-- Split the rendering and event handling thread from the ticking thread.
 
-## Motivation  
+## How to use
 
-why not?
+- SPACE: Toggle pause and resume.
+- ESC: Close the program.
+- Right Arrow: Progress one tick.
+- Middle Mouse: Drag the universe.
+- Right Mouse: Kill a cell.
+- Left Mouse: Revive a cell.
