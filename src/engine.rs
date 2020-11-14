@@ -31,12 +31,12 @@ impl Engine {
 
         window.set_fullscreen(sdl2::video::FullscreenType::Desktop)?;
 
-        let mut canvas = match window.into_canvas().build() {
+        let canvas = match window.into_canvas().build() {
             Ok(canvas) => canvas,
             Err(e) => return Err(format!("Could not convert window into canvas: {:?}", e))
         };
 
-        let mut event_pump = sdl_context.event_pump().unwrap();
+        let event_pump = sdl_context.event_pump().unwrap();
 
         // canvas.set_draw_color(Color::RGB(120, 120, 120));
         // canvas.clear();
