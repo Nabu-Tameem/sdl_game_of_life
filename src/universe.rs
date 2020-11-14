@@ -182,4 +182,8 @@ impl Universe {
     pub fn increment_scale(&mut self, increment: f32) {
         self.scale += increment;
     }
+
+    pub fn reset(&mut self) {
+        self.cells = vec![Cell::Dead; (self.width * self.height) as usize];
+    }
 }

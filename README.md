@@ -48,3 +48,4 @@ eopkg install -c sdl2-devel
 - Left Mouse: Revive a cell.
 - Scroll Up: Zoom in to the universe.
 - Scroll Down: Zoom out of the universe.
+- R: To reset universe to initial state.

@@ -66,17 +66,25 @@ impl Engine {
 
             for event in self.event_pump.poll_iter() {
                 match event {
-                    Event::Quit {..} |
-                    Event::KeyDown {keycode: Some(Keycode::Escape), ..} => {
+                    Event::Quit {..} => {
                         break 'running
-                    },
-                    Event::KeyDown {keycode: Some(Keycode::Space), ..} => {
-                        self.universe.toggle_state();
-                    },
-                    Event::KeyDown {keycode: Some(Keycode::Right), ..} => {
-                        self.universe.run();
-                        self.universe.tick();
-                        self.universe.pause();
+                    }
+                    Event::KeyDown {keycode, ..} => {
+                        match keycode {
+                            Some(Keycode::Space) => self.universe.toggle_state(),
+                            Some(Keycode::Right) => {
+                                self.universe.run();
+                                self.universe.tick();
+                                self.universe.pause();
+                            }
+                            Some(Keycode::Escape) => {
+                                break 'running
+                            }
+                            Some(Keycode::R) => {
+                                self.universe.reset();
+                            }
+                            _ => {}
+                        }
                     },
                     // Enable dragging, cell revive mode, and cell kill mode.
                     Event::MouseButtonDown {mouse_btn, x, y, ..} => {
