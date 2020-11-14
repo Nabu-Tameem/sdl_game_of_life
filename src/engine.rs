@@ -56,8 +56,6 @@ impl Engine {
         self.canvas.clear();
         self.canvas.present();
 
-        let mut mouse_state = sdl2::mouse::MouseState::new(& self.event_pump);
-
         let mut mouse_dragging = false;
         let mut mouse_setting = false;
         let mut mouse_clearing = false;
