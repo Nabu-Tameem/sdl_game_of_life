@@ -64,6 +64,7 @@ impl Engine {
         let mut previous_mouse_pos_y: i32 = 0;
 
         'running: loop {
+            let mut rendered = false;
             self.canvas.set_draw_color(Color::RGB(120, 120, 120));
             self.canvas.clear();
 
@@ -80,6 +81,9 @@ impl Engine {
                         self.universe.run();
                         self.universe.tick();
                         self.universe.pause();
+                        self.universe.render(&mut self.canvas);
+                        self.canvas.present();
+                        rendered = true;
                     },
                     // Enable dragging, cell revive mode, and cell kill mode.
                     Event::MouseButtonDown {mouse_btn, x, y, ..} => {
@@ -89,10 +93,15 @@ impl Engine {
                                 self.universe.revive(x, y);
                                 self.universe.render(&mut self.canvas);
                                 self.canvas.present();
+                                rendered = true;
+
                             },
                             MouseButton::Right => {
                                 mouse_clearing = true;
                                 self.universe.kill(x, y);
+                                self.universe.render(&mut self.canvas);
+                                self.canvas.present();
+                                rendered = true;
                             },
                             MouseButton::Middle => mouse_dragging = true,
                             _ => {}
@@ -125,15 +134,21 @@ impl Engine {
                         } else if mouse_clearing {
                             self.universe.kill(x, y);
                         }
+                        self.universe.render(&mut self.canvas);
+                        self.canvas.present();
+                        rendered = true;
                     },
                     _ => {
                     }
                 }
             }
-
-            self.universe.render(&mut self.canvas);
             self.universe.tick();
-            self.canvas.present();
+
+            if !rendered {
+                self.universe.render(&mut self.canvas);
+                self.canvas.present();
+            }
+            
         }
     }
 }
