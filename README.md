@@ -23,6 +23,12 @@ Solus
 ```shell
 eopkg install -c sdl2-devel
 ```
+- Rust: https://www.rust-lang.org/tools/install
+
+## Installation
+```shell
+cargo run --release
+```
 
 ## Features to be added
 
